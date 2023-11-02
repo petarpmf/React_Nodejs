@@ -19,14 +19,20 @@ const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
+  const [qrCodeStatus, setQrCodeStatus] = useState(undefined);
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
+    const qrCodeStatus = AuthService.getCurrentQrCodeStatus();
 
     if (user) {
       setCurrentUser(user);
       setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
       setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
+    }
+
+    if (qrCodeStatus) {
+      setQrCodeStatus(qrCodeStatus);
     }
 
     EventBus.on("logout", () => {
@@ -49,13 +55,15 @@ const App = () => {
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
         <div className="navbar-nav mr-auto">
-          <li className="nav-item">
-            <Link to={"/home"} className="nav-link">
-              Home
-            </Link>
-          </li>
+          {qrCodeStatus && (
+            <li className="nav-item">
+              <Link to={"/home"} className="nav-link">
+                Home
+              </Link>
+            </li>
+          )}
 
-          {showModeratorBoard && (
+          {showModeratorBoard && qrCodeStatus && (
             <li className="nav-item">
               <Link to={"/mod"} className="nav-link">
                 Moderator Board
@@ -63,7 +71,7 @@ const App = () => {
             </li>
           )}
 
-          {showAdminBoard && (
+          {showAdminBoard && qrCodeStatus && (
             <li className="nav-item">
               <Link to={"/admin"} className="nav-link">
                 Admin Board
@@ -71,7 +79,7 @@ const App = () => {
             </li>
           )}
 
-          {currentUser && (
+          {currentUser && qrCodeStatus && (
             <li className="nav-item">
               <Link to={"/user"} className="nav-link">
                 User

@@ -3,7 +3,7 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import { isEmail } from "validator";
-
+import { Routes, Route, Link } from "react-router-dom";
 import AuthService from "../services/auth.service";
 
 const required = (value) => {
@@ -55,6 +55,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
 
   const onChangeUsername = (e) => {
     const username = e.target.value;
@@ -84,6 +85,16 @@ const Register = () => {
         (response) => {
           setMessage(response.data.message);
           setSuccessful(true);
+          const data_url = JSON.parse(response.data.data.secret).data_url;
+          //let imageUrl = URL.createObjectURL(data_url);
+          setQrCodeUrl(data_url);
+          // AuthService.login(username, password).then((response) =>{
+          //   console.log('login-=-=-=');
+          //   console.log(response);
+          //   if (response.accessToken) {
+          //     window.location.replace("/profile")
+          //   }
+          // })
         },
         (error) => {
           const resMessage =
@@ -109,6 +120,7 @@ const Register = () => {
           className="profile-img-card"
         />
 
+      {!qrCodeUrl && ( 
         <Form onSubmit={handleRegister} ref={form}>
           {!successful && (
             <div>
@@ -162,12 +174,24 @@ const Register = () => {
                 }
                 role="alert"
               >
-                {message}
-              </div>
+                {message}            
+              </div>  
             </div>
           )}
           <CheckButton style={{ display: "none" }} ref={checkBtn} />
         </Form>
+        )}
+         {qrCodeUrl && ( 
+          <div className="form-group">
+              <div>
+                  <div>The user is successfully registered.
+                    <Link to={"/login"} className="nav-link">
+                      Login
+                    </Link>
+                  </div>
+              </div>
+          </div>
+         )}
       </div>
     </div>
   );
