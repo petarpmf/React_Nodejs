@@ -19,11 +19,16 @@ const getAdminBoard = () => {
   return axios.get(API_URL + "admin", { headers: authHeader() });
 };
 
+const getLogs = () => {
+  return axios.get(API_URL + "logs", { headers: authHeader() });
+};
+
 const UserService = {
   getPublicContent,
   getUserBoard,
   getModeratorBoard,
   getAdminBoard,
+  getLogs,
 };
 
 export default UserService;

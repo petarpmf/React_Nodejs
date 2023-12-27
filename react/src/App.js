@@ -12,7 +12,7 @@ import Profile from "./components/Profile";
 import BoardUser from "./components/BoardUser";
 import BoardModerator from "./components/BoardModerator";
 import BoardAdmin from "./components/BoardAdmin";
-
+import Logs from "./components/Logs";
 import EventBus from "./common/EventBus";
 
 const App = () => {
@@ -86,6 +86,14 @@ const App = () => {
               </Link>
             </li>
           )}
+
+          {showAdminBoard && qrCodeStatus && (
+            <li className="nav-item">
+              <Link to={"/logs"} className="nav-link">
+                Logs
+              </Link>
+            </li>
+          )}
         </div>
 
         {currentUser ? (
@@ -128,6 +136,7 @@ const App = () => {
           <Route path="/user" element={<BoardUser/>} />
           <Route path="/mod" element={<BoardModerator/>} />
           <Route path="/admin" element={<BoardAdmin/>} />
+          <Route path="/logs" element={<Logs/>} />
         </Routes>
       </div>
 

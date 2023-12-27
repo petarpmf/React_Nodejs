@@ -8,6 +8,8 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const speakeasy = require('speakeasy')
 const QRCode = require('qrcode')
+const Producer = require("../utils/producer");
+const producer = new Producer();
 
 exports.signup = (req, res) => {
   try{
@@ -28,14 +30,18 @@ exports.signup = (req, res) => {
                   [Op.or]: req.body.roles
                 }
               }
-            }).then(roles => {
-              user.setRoles(roles).then(() => {
+            }).then(roles => {              
+              user.setRoles(roles).then(async () => {
+                // Returns a random integer from 0 to 10 for priority
+                await producer.publishMessage("Info", user, Math.floor(Math.random() * 11));
                 res.status(200).send({ message: "User registered successfully!", data: user.toJSON() });
               });
             });
           } else {
-            // user role = 1
-            user.setRoles([1]).then(() => {
+            // user role = 1            
+             user.setRoles([1]).then(async () => {
+              // Returns a random integer from 0 to 10 for priority
+              await producer.publishMessage("Info", user, Math.floor(Math.random() * 11));
               res.status(200).send({ message: "User registered successfully!", data: user.toJSON() });
             });
           }
